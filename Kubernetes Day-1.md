@@ -208,4 +208,4 @@ sudo systemctl restart docker
 
 ---
 
-`**Bonus:**` You can use [KillerKoda](https://killercoda.com/) for practicing Kubernetes.
+**`Bonus:`** You can use [KillerKoda](https://killercoda.com/) for practicing Kubernetes.
