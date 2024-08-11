@@ -12,9 +12,9 @@
 			- **Worker Nodes:** These machines run containerized applications packaged as pods. You can have multiple worker nodes to distribute the workload and scale your applications horizontally.
 		- **Benefits:** It can easily scale the system, has the high availability and less faulty ensuring the continuity.
 
-==**Note:**== Always the version of Worker Node should not be greater than Control Plane node due to backward compatibility issues can come.
+**Note:** Always the version of Worker Node should not be greater than Control Plane node due to backward compatibility issues can come.
 
-| ==Feature==            | ==Single-Node Cluster==               | ==Multi-Node Cluster==        |
+| Feature            | Single-Node Cluster              | Multi-Node Cluster        |
 | ---------------------- | ------------------------------------- | ----------------------------- |
 | **Nodes:**             | One node                              | Multiple nodes                |
 | **Control Plane:**     | Runs on the single node               | Dedicated control plane nodes |
@@ -23,6 +23,9 @@
 | **High Availability:** | No                                    | Yes                           |
 | **Fault Tolerance:**   | Limited                               | High                          |
 | **Use Cases:**         | Development, testing                  | Production deployments        |
+
+---
+
 ### What is Kubernetes Objects ?
 - In Kubernetes, objects are the fundamental building blocks that defines and manage your applications. They acts as a record of intent, specifing the desired state of you containerized workloads.
 - By creating Kubernetes objects, we essentially tell the Kubernetes system how we want our cluster to be configured. So the Kubernetes system then works automatically to make sure that cluster reaches that desired state.
@@ -31,6 +34,7 @@
 	- **Deployments:** Manage the lifecycle of your containerized applications. You specify the desired state (e.g., number of replicas) and Kubernetes automatically scales and updates the Pods.
 	- **Services:** Provide a way to access your applications running on Pods across the cluster using a single network address and port.
 	- **Namespaces:** Isolate groups of resources within a cluster, allowing for better organization and multi-tenancy.
+
 
 ### What are the tools which is used for setup and managing Kubernetes Cluster ?
 - **kind:**
@@ -49,7 +53,9 @@
 	- **Standardized Container Images:** Container images are created using standardized formats like Dockerfile. These formats specify the instructions for building the container, including the application code, dependencies, and environment variables. This ensures consistent behavior across different systems.
 	- **Container Runtime Engines:** Container runtime engines like Docker or containerd are responsible for running container images. These engines are available on most Linux distributions and cloud platforms.
 
-![[Pasted image 20240424181634.png]]
+![Pasted image 20240424181634](https://github.com/user-attachments/assets/7cd1cd08-3f3c-4424-98f5-27ceb2d9c332)
+
+
 ### Why can't we use "registry tag" as "latest" ?
 - For production deployments, we'll avoid using the "latest" tag for container images. This is because it's difficult to keep track of exactly which updates have been rolled out with "latest." Instead, we'll use specific version numbers from our registry to ensure we know precisely what code is running in our applications.
 - Also backward compatibility is deminished.
@@ -88,12 +94,19 @@
             - This final image is much smaller than the build stage because it excludes the bulky build tools.
 #### To Run Images we have another abstraction named "Containers".
 
+---
+## Containers
+
 ### What is a Container ?
 - Containers are a way to package software in a standardized unit that includes everything needed to run the code, regardless of the underlying computer system. They are like self-contained shipping containers for your applications.
 - Also Don't Confuse yourself with Container as Docker, as Docker is a tool used for Containerization.
 - There are **two types of containers application** are as follow:
 	- **Stateless Application:** They don't remember anything about past interactions with users. Each request is treated independently, like a new customer at a store each time or Forgotful Application.
 	- **Stateful Application:** They keep track of user interactions and preferences across multiple requests. They "remember" you, like a store with a loyalty program or Memorable Application.
+
+---
+
+## Kubectl
 
 ### What is Kubectl ?
 - Kubectl is the command-line tool or utility for interacting with Kubernetes clusters or we can use `alias k=kubectl` to save time but don't use in production environment.
@@ -131,6 +144,8 @@
 
 [**K9s**](https://k9scli.io/) is a dashboard for the resources we have in our kubernetes cluster or K8s.
 
+## Pods
+
 ### What is Pod?
 - A pod is the smallest deployable unit in Kubernetes. It represents a group of one or more containers (like mini-applications) that are tightly coupled and shared storage and network resources.
 ### Does Pods are disposable and Ephemeral ?
@@ -141,16 +156,18 @@
 ### What is Static Pods ?
 - The path `/etc/kubernetes/manifests` on a Kubernetes node is typically used to store the manifest files for static pods. Static pods are managed directly by the kubelet on each node, rather than by the Kubernetes API server.
 
-![[Pasted image 20240706112054.png]]
+![Pasted image 20240706112054](https://github.com/user-attachments/assets/ca0357c1-ac2b-42a1-b710-f61ef6a86325)
+
 ### How do we give command to kubelet and path of static pod for running ?
 - This is the path for **`cd /var/lib/kubelet`** in Kubernetes stores various data used by the kubelet, the agent running on each node in the cluster.
 
-![[Pasted image 20240706112847.png]]
+![Pasted image 20240706112847](https://github.com/user-attachments/assets/72d7a39f-15a7-4093-91da-3bf3b7910a1c)
 
 - The static pod path is defined in **config.yaml** and this can be changable.
 
-![[Pasted image 20240706113353.png]]
-### Key Differences between Static Pod and DaemonSets.
+![Pasted image 20240706113353](https://github.com/user-attachments/assets/7d3bb552-da2b-46d2-93da-94bbac91e855)
+
+## Key Differences between Static Pod and DaemonSets.
 
 1. **Management**:
     
@@ -168,6 +185,11 @@
     
     - **Static Pods**: Limited to the individual node's state and require manual intervention for lifecycle management.
     - **DaemonSets**: Provide better lifecycle management and are aware of the overall cluster state, allowing for more resilient and flexible operations.
+
+---
+
+## YAML
+
 ### How are pod creates using YAML ?
 - This YAML file describes details like: name of the pod, the container image to use, any port to expose,resources requests and limits and storage configurations.
 ```yaml
@@ -182,7 +204,8 @@ spec:
     ports:
     - containerPort: 80
 ```
-- Breakdown of YAML Elements:
+
+- **Breakdown of YAML Elements**:
 	- **`apiVersion`** : This tells Kubernetes which version of the API you're using to define the pod. It's usually `v1` for core resources like pods. Different namespaces may require resources from different **API groups (like security or RBAC)**.
 	- **`kind`** : This simply states what kind of resource you're defining. In this case, it's `Pod`. Kubernetes recognizes various resource types like deployments, services, and persistent volumes, each with its own `kind`.
 	- **`metadata`** : It provides information about your pod, like a name tag. Like **`name`** is a unique identifier for your pod within a kubernetes cluster or we can add optional labels and annotations for further details.
@@ -207,6 +230,8 @@ kubectl get pods
 kubectl exec -it <pod-name> -- /bin/bash
 ```
 
+---
+
 ### What is Debug Containers ?
 - In Kubernetes, a debug container is a temporary container specifically designed to aid in troubleshooting issues within another container that's already running in a pod. It acts like a sidekick container alongside your application container.
 - You can use `kubectl debug` to create a debug container with a debugger image. 
@@ -216,7 +241,7 @@ kubectl exec -it <pod-name> -- /bin/bash
 kubectl debug mypod --image=busybox --target=app-container -- /bin/sh
 ```
 
-#### Init Containers:
+### Init Containers:
 - Designed to run setup scripts or perform initialization tasks before the main application containers start and runs to completion before the main containers start, then exits.
 - We can run mulitple init containers before the actual application runs.
 - It has its own namespace, but can prepare the environment (e.g., configure filesystems, set up initial state).
@@ -242,7 +267,7 @@ kubectl apply -f init-container.yaml
 # If Init Container fails check logs
 kubectl logs <pod-name> -c init-container
 ```
-#### Sidecar Containers: (Came in 1.29 Version)
+### Sidecar Containers: (Came in 1.29 Version)
 - Designed to run alongside the main application containers to provide additional functionality (e.g., logging, monitoring, proxying) and runs for the entire lifetime of the pod.
 - It shares the same pod environment and can interact with the main application containers.
 - Sidecar has **`restartpolicy`** which is not present in initContainer. It has 3 types never, onFailure and Always(default).
