@@ -579,34 +579,34 @@ docker image ls
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-	name: nginx
+  name: nginx
 spec:
-	replicas: 3
-	selector:
-		matchlabels:
-			app: nginx
-	template:
-		metadata:
-			labels:
-				app: nginx
-				version: "1.0"
-		spec:
-			containers:
-				- name: nginx
-			       image: nginx:alpine
-			       resources:
-				       limits:
-					    memory: "128Mi"
-					    cpu: "50m"
-				ports:
-					-containerPort: 80
-				volumeMounts:
-					- mountPath: /usr/share/nginx/html
-					   name: index.html
-		volumes:
-			- name:  index.html
-			   hostPath:
-				   path: /path/to/v1
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: "1.0"
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "50m"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: index.html
+      volumes:
+        - name: index.html
+          hostPath:
+            path: /path/to/v1
 ```
 
 - Apply and verify the deployment of **(Version 1.0)**.
@@ -622,15 +622,15 @@ kuebctl get pods -o wide
 apiVersion: v1
 kind: Service
 metadata:
-	name: nginx-service
+  name: nginx-service
 spec:
-	type: LoadBalancer
-	selector:
-		app: nginx
-		version: "1.0"
-	ports:
-		- port: 8888
-		   targetPort: 80
+  type: LoadBalancer
+  selector:
+    app: nginx
+    version: "1.0"
+  ports:
+    - port: 8888
+      targetPort: 80
 ```
 
 - Apply and verify the Service of **(Version 1.0)**.
@@ -646,34 +646,34 @@ kubectl get service
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-	name: nginx-canary-deployment
+  name: nginx-canary-deployment
 spec:
-	replicas: 3
-	selector:
-		matchLabels:
-			app: nginx
-	template:
-		metadata:
-			labels:
-				app: nginx
-				version: "2.0"
-		spec:
-			containers:
-				- name: nginx
-			       image: nginx:apline
-			       resources:
-				       limits:
-					       memory: "128Mi"
-					       cpu: "50m"
-				ports:
-					- containerPort: 80
-				volumeMounts:
-					- mountPath: /usr/share/nginx/html
-					   name: index.html
-			volumes:
-				- name: index.html
-				   hostPath:
-					path: /path/to/v2
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: "2.0"
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "50m"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: index.html
+      volumes:
+        - name: index.html
+          hostPath:
+            path: /path/to/v2
 ```
 
 - Deploy and verify the canary pods of **(Version 2.0)** of **`canary-deployment.yaml`**.
@@ -689,15 +689,15 @@ kubectl get pods -o wide
 apiVersion: v1
 kind: Service
 metadata:
-	name: nginx-service
+  name: nginx-service
 spec:
-	  type: LoadBalancer
-	  selector:
-	    app: nginx
-	    version: "2.0"
-	  ports:
-	    - port: 8888
-	      targetPort: 80
+  type: LoadBalancer
+  selector:
+    app: nginx
+    version: "2.0"
+  ports:
+    - port: 8888
+      targetPort: 80
 ```
 
 - Apply the Updated Service and test out the deployment by refreshing the webpage to see responses from both **Version 1** and **Version 2**.
